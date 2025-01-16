@@ -3,10 +3,10 @@
 The software for an injury counter.
 
 Uses the following items:
-Arduino UNO
-Seven Segment Displays
-4511 Decoder ICs
-470 Ohm Resistors
+Arduino UNO,
+Seven Segment Displays,
+4511 Decoder ICs,
+470 Ohm Resistors,
 Tactile Switches
 
 When a button is pressed, the count returns to zero.
