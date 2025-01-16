@@ -4,6 +4,7 @@
 
 // General Function Declarations
 
+// The result of the binary conversion for the driver module in the global scale so that SevenSegDisplay::generateDriverNum can read the result
 int outputBinary[4];
 
 void convertToFourBit(int convertingNum) {
@@ -62,8 +63,8 @@ class SevenSegDisplay {
     void generateDriverNum(int newNum);
     bool driverAttached;
   private:
-    int driverDisplayPins[4];
-    int directDisplayPins[8];
+    int _driverDisplayPins[4];
+    int _directDisplayPins[8];
 };
 
 void SevenSegDisplay::initializeDisplay(int newDisplayPins[], bool newDriverAttached) {
@@ -71,13 +72,13 @@ void SevenSegDisplay::initializeDisplay(int newDisplayPins[], bool newDriverAtta
   
   if (newDriverAttached) {
     for (int x = 0; x < 4; x++) {
-      driverDisplayPins[x] = newDisplayPins[x];
-      pinMode(driverDisplayPins[x], OUTPUT);
+      _driverDisplayPins[x] = newDisplayPins[x];
+      pinMode(_driverDisplayPins[x], OUTPUT);
     }
   } else {
     for (int x = 0; x < 8; x++) {
-      directDisplayPins[x] = newDisplayPins[x];
-      pinMode(directDisplayPins[x], OUTPUT);
+      _directDisplayPins[x] = newDisplayPins[x];
+      pinMode(_directDisplayPins[x], OUTPUT);
     }
   }
 };
@@ -119,16 +120,44 @@ void SevenSegDisplay::generateDirectNum(int newNum) {
 
     // Once the configuration is set then turn on all applicable pins
     for (int pin = 0; pin < 8; pin++) {
-      digitalWrite(this->directDisplayPins[pin], *pinMapping);
+      digitalWrite(this->_directDisplayPins[pin], *pinMapping);
     }
   }
 }
 
 void SevenSegDisplay::generateDriverNum(int newNum) {
+  // Uses the four bit converted form of the number and outputs the values to the 4511 driver pins.
+
   convertToFourBit(newNum);
   for (int pin = 0; pin < 4; pin++) {
-    digitalWrite(this->driverDisplayPins[pin], outputBinary[pin]);
+    digitalWrite(this->_driverDisplayPins[pin], outputBinary[pin]);
   }
+}
+
+// Class declarations for Override Switch
+
+class overrideSwitch {
+  public:
+    void initializeSwitch(int pinNum);
+    bool checkSwitchState();
+  private:
+    int _pinNum;
+    bool _pressed;
+    bool _pressedSinceLastTick;
+};
+
+void overrideSwitch::initializeSwitch(int pinNum) {
+  // Assigns the given pin number to the private _pinNum variable and declares _pinNum to be an input pin
+  
+  this->_pinNum = pinNum;
+  pinMode(this->_pinNum, INPUT);
+}
+
+bool overrideSwitch::checkSwitchState() {
+  // Checks whether the button is being pressed and assigns the result to _pressed
+  // Also checks whether the button had already been pressed before the check, important for ensuring the counter only increase once.
+  this->_pressed = digitalRead(_pinNum);
+  this->_pressedSinceLastTick = (_pressed == false) ? false : this->_pressedSinceLastTick;
 }
 
 // Functions run during runtime
