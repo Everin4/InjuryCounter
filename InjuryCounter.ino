@@ -3,6 +3,7 @@
 // 16th January 2025
 
 // Class declarations for SevenSegDisplay
+
 class SevenSegDisplay {
   public:
     void initializeDisplay(int newDisplayPins[], bool newDriverAttached);
@@ -71,6 +72,55 @@ void SevenSegDisplay::generateDirectNum(int newNum) {
     }
   }
 }
+
+// General Function Declarations
+
+void convertToFourBit(int convertingNum) {
+  // Turns convertingNum into four bit binary, as long as the number is single digit
+  // i.e 8 is converted to 0100
+
+  int outputBinary[] = {0,0,0,0};
+
+  if (convertingNum < 10) {
+    switch(convertingNum) {
+      case 1:
+        outputBinary[3] = 1;
+        break;
+      case 2:
+        outputBinary[2] = 1;
+        break;
+      case 3:
+        outputBinary[2] = 1;
+        outputBinary[3] = 1;
+        break;
+      case 4:
+        outputBinary[1] = 1;
+        break;
+      case 5:
+        outputBinary[1] = 1;
+        outputBinary[3] = 1;
+        break;
+      case 6:
+        outputBinary[1] = 1;
+        outputBinary[2] = 1;
+        break;
+      case 7:
+        outputBinary[1] = 1;
+        outputBinary[2] = 1;
+        outputBinary[3] = 1;
+        break;
+      case 8:
+        outputBinary[0] = 1;
+        break;
+      case 9:
+        outputBinary[0] = 1;
+        outputBinary[3] = 1;
+        break;
+    }
+  }
+}
+
+// Functions run during runtime
 
 void setup() {
 
